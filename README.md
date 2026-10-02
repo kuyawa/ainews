@@ -7,8 +7,11 @@ your own browser.
 
 ![screenshot](shot1.png)
 
-**v1 fetches RSS/Atom feeds only.** HTML scraping is designed in but not built —
-see `architecture.md` §14.
+Headlines come from each source's own feed where one exists, and from its
+homepage where none does — a feed is preferred because it is the publisher's own
+structured output. Of the 30 sources listed, 18 are active: 12 provide a feed and
+6 are read by scraping. The other 12 are parked, with the reason shown in the
+sidebar.
 
 ---
 
@@ -82,10 +85,11 @@ For each source the engine decides:
 
 | Situation | Result |
 |---|---|
-| No feed and no selector | skipped, warned `no source` |
-| Has a selector but no feed | skipped, warned `not implemented` |
+| Inactive | never requested under any circumstance |
+| Has a feed | feed fetched and parsed |
+| No feed | homepage fetched and scraped |
 | Inside its cooldown | skipped, silently |
-| Feed fetched and parsed | headlines stored, deduplicated by URL |
+| Headlines parsed | stored, deduplicated by URL |
 | 403 / 429 | warned `blocked` |
 | 5xx | warned `server error` |
 | Timeout, DNS, TLS | warned `unreachable` |

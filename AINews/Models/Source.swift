@@ -24,7 +24,11 @@ final class Source {
     var rank: Int
 
     var cooldownMinutes: Int
-    /// Reserved for the scrape strategy. Always nil in v1.
+    /// Optional refinement for the scrape strategy, and not read yet.
+    ///
+    /// ScrapeFetcher is a general heuristic that needs no selector, so routing
+    /// a source to scraping no longer requires one. This becomes the CSS
+    /// selector its name promises once a real HTML parser lands.
     var headlineSelector: String?
 
     var consecutiveFailures: Int

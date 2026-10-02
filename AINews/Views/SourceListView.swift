@@ -118,7 +118,10 @@ private struct SourceRow: View {
         if let feed = source.feedURL {
             lines.append("Feed: \(feed.absoluteString)")
         } else {
-            lines.append("No feed. Needs HTML scraping, which is not implemented yet.")
+            // Read by ScrapeFetcher. This said scraping was not implemented,
+            // which stopped being true the moment it was wired in - and it was
+            // the last place in the app still telling the reader so.
+            lines.append("No feed. Read by scraping the homepage.")
         }
         if let at = source.lastFetchedAt {
             lines.append("Last fetched: \(at.formatted(date: .abbreviated, time: .shortened))")

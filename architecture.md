@@ -60,7 +60,6 @@ Consequences that shape everything below:
 - Background or scheduled fetching. **Every run is started by a human** (see §13 D6).
 - iOS / iPadOS.
 - App Store distribution, notarisation, or code signing for distribution.
-- HTML scraping **wired into the app** in v1: `ScrapeFetcher` is written and tested, but the engine still reports scrape sources as not implemented. Enabling it for all 13 feed-less sources at once is what §14 defers.
 - Any further work on the earlier browser-based version.
 
 ---
@@ -192,12 +191,14 @@ while a human-initiated run is in progress.
 | Extract | Item title + link, and the published date when present |
 | Reject | Empty titles, `javascript:`/`mailto:` links, duplicates within one feed |
 
-### ScrapeFetcher (not implemented in v1)
+### ScrapeFetcher
 | Responsibility | Detail |
 |---|---|
-| Status | **Designed, not built.** The protocol conformance and routing already exist; the type does not |
-| Future work | Fetch the homepage, apply `headlineSelector`, return the same `[ParsedItem]` |
-| Why it matters now | The router, the model field and the warning path are all in place, so adding it later touches no engine code |
+| Status | **Built.** Reads the homepage of any source that publishes no feed |
+| Why no per-site selector | Link text that is headline-length, on the same host, and pointing at something article-shaped. Measured against three real homepages: 29 / 7 / 67 headlines and no navigation |
+| Filters | Article shape, tracking-query duplicates, unrendered templates, site furniture |
+| Cannot do | A JavaScript-rendered homepage, and it may surface an occasional promo block |
+| `headlineSelector` | Carried and routed, not yet consulted. Becomes the CSS selector its name promises once an HTML parser lands |
 
 ### TranslationCoordinator (`@MainActor`, `@Observable`)
 | Responsibility | Detail |
@@ -563,9 +564,9 @@ So `Info.plist` needs a **narrow** exception — never a blanket
           NSExceptionAllowsInsecureHTTPLoads = true
 
 Note that 甲子光年's *homepage* is also plain HTTP (`http://www.jazzyear.com`),
-but its **feed** is HTTPS (`werss.bestblogs.dev`). Since v1 fetches feeds only,
-no exception is needed for it today — add one only if HTML scraping is ever
-enabled (§14).
+but its **feed** is HTTPS, so no exception is needed. The source is inactive in
+any case, because its feed host (`werss.bestblogs.dev`) is unreachable. Add an
+exception only if it is ever scraped.
 
 ### Sandboxing — off
 The app is **not sandboxed** (decision D4). It is a personal tool, not App Store
@@ -667,13 +668,14 @@ silently revisit them.
 
 ## 14. Future Work
 
-- **Wire `ScrapeFetcher` into the app.** It is written and tested, but the
-  engine still short-circuits scrape routes as not implemented. What remains is
-  the opt-in below; without it, enabling scraping fires 13 unchecked homepage
-  requests at once.
-- **Per-source opt-in for scraping.** `headlineSelector` is the natural place
-  for it — today it would mean "this source may be scraped", and once an HTML
-  parser lands it becomes the CSS selector it was named for.
+- **Drift detection.** A scraper that quietly returns 3 of 40 headlines looks
+  exactly like success. `emptyFeed` catches zero items and nothing catches
+  "suddenly far fewer than last time", which is the shape of a site redesign —
+  the failure a heuristic is most likely to suffer. Comparing each run against
+  the previous count would catch it.
+- **Per-source scraping controls.** There are none, deliberately: every source
+  that is not inactive and has no feed is scraped. Inactive is the switch that
+  keeps us off a site, and it is checked before any strategy is chosen.
 - **A proper HTML parser** (SwiftSoup via SPM) if the heuristic proves too
   blunt. Ranked against three real homepages, `ScrapeFetcher` returns 29 / 7 /
   67 headlines and no navigation, after filters for article shape,
