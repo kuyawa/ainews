@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+._*
+
+# Xcode
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Build output
+*.dSYM
+*.swiftmodule
+
+# Source artwork: the untouched 2048x2048 original, 4.6 MB. Not needed to
+# build - the ten compiled sizes live in the asset catalog and are generated
+# from the shaped 1024px master, which is tracked.
+Icon/appicon.png
+
+# Local scratch
+*.log

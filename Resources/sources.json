@@ -1,0 +1,272 @@
+[
+  {
+    "source_id": "jiqizhixin",
+    "name": "Jiqizhixin (机器之心)",
+    "url": "https://www.jiqizhixin.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Official RSS exists but requires paid data subscription."
+  },
+  {
+    "source_id": "qbitai",
+    "name": "QbitAI (量子位)",
+    "url": "https://www.qbitai.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "No direct official RSS. Tracked via third-party aggregators."
+  },
+  {
+    "source_id": "aiera",
+    "name": "AI Era (新智元)",
+    "url": "https://www.ailab.cn",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "No direct official RSS. Tracked via third-party AIGC aggregators."
+  },
+  {
+    "source_id": "zhidongxi",
+    "name": "Zhidongxi (智东西)",
+    "url": "https://zhidx.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Pushes news via WeChat service account. No public RSS."
+  },
+  {
+    "source_id": "leitech",
+    "name": "LeiTech (雷科技)",
+    "url": "https://www.leitech.cn",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Leading Chinese tech media with 3M+ WeChat followers. Focus on AI hardware, chips, EVs, large models. No public RSS."
+  },
+  {
+    "source_id": "leiphone",
+    "name": "Leiphone (雷锋网)",
+    "url": "https://www.leiphone.com",
+    "feed_url": "http://www.leiphone.com/feed/",
+    "status": "ready",
+    "inactive": false,
+    "note": "Legacy feed URL found. Verify it is still active."
+  },
+  {
+    "source_id": "jiazi",
+    "name": "Jiazi Guangnian (甲子光年)",
+    "url": "http://www.jazzyear.com",
+    "feed_url": "https://werss.bestblogs.dev/feeds/MP_WXS_3599245772.atom",
+    "status": "ready_via_third_party",
+    "inactive": false,
+    "note": "Third-party Atom feed likely pulling from WeChat."
+  },
+  {
+    "source_id": "digitimes",
+    "name": "DIGITIMES",
+    "url": "https://www.digitimes.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Taiwan's authoritative semiconductor and electronics news source."
+  },
+  {
+    "source_id": "etnews",
+    "name": "ETNews (Electronic Times)",
+    "url": "https://www.etnews.com",
+    "feed_url": "https://www.etnews.com/rss/",
+    "status": "ready",
+    "inactive": false,
+    "note": "Official RSS feed. Korean electronics industry standard."
+  },
+  {
+    "source_id": "nikkei_xtech",
+    "name": "Nikkei xTECH (日経クロステック)",
+    "url": "https://xtech.nikkei.com",
+    "feed_url": "https://xtech.nikkei.com/rss/index.rdf",
+    "status": "ready",
+    "inactive": false,
+    "note": "Official RSS feed. Nikkei is headquartered in Tokyo."
+  },
+  {
+    "source_id": "ithome",
+    "name": "ITHome (IT之家)",
+    "url": "https://www.ithome.com",
+    "feed_url": "https://www.ithome.com/rss/",
+    "status": "ready",
+    "inactive": false,
+    "note": "Official RSS feed. Update frequency about once per hour."
+  },
+  {
+    "source_id": "aiwatch",
+    "name": "AI Watch (Impress)",
+    "url": "https://ai.watch.impress.co.jp/",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Launched April 2026. Part of Impress Group (Japan)."
+  },
+  {
+    "source_id": "technews_tw",
+    "name": "TechNews (科技新报)",
+    "url": "https://technews.tw",
+    "feed_url": "https://technews.tw/feed/",
+    "status": "ready",
+    "inactive": false,
+    "note": "Taiwan's leading technology media. HQ in Taipei."
+  },
+  {
+    "source_id": "bnext",
+    "name": "Business Next (數位時代)",
+    "url": "https://www.bnext.com.tw",
+    "feed_url": "https://www.bnext.com.tw/rss",
+    "status": "ready",
+    "inactive": false,
+    "note": "Taiwan's most influential tech and finance media. HQ in Taipei."
+  },
+  {
+    "source_id": "ifanr",
+    "name": "ifanr (爱范儿)",
+    "url": "https://www.ifanr.com",
+    "feed_url": "https://www.ifanr.com/feed",
+    "status": "ready",
+    "inactive": false,
+    "note": "China's leading tech lifestyle media. Official RSS available."
+  },
+  {
+    "source_id": "sspai",
+    "name": "sspai (少数派)",
+    "url": "https://sspai.com",
+    "feed_url": "https://sspai.com/feed",
+    "status": "ready",
+    "inactive": false,
+    "note": "Focus on productivity tools and AI workflows. Official RSS available."
+  },
+  {
+    "source_id": "technode",
+    "name": "TechNode",
+    "url": "https://technode.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "English-language gateway to Chinese technology. Rooted in China, part of TechNode Group."
+  },
+  {
+    "source_id": "tnglobal",
+    "name": "TNGlobal",
+    "url": "https://technode.global",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Southeast Asia and pan-Asian tech coverage. Part of TechNode Group, based in Singapore."
+  },
+  {
+    "source_id": "techorange",
+    "name": "TechOrange (科技報橘)",
+    "url": "https://techorange.com",
+    "feed_url": "https://techorange.com/feed/",
+    "status": "ready",
+    "inactive": false,
+    "note": "Taiwanese media dedicated to AI and technology innovation."
+  },
+  {
+    "source_id": "inside_tw",
+    "name": "INSIDE (硬塞的)",
+    "url": "https://www.inside.com.tw",
+    "feed_url": "https://www.inside.com.tw/feed",
+    "status": "ready",
+    "inactive": false,
+    "note": "Taiwan's leading tech and business media. Official RSS available."
+  },
+  {
+    "source_id": "inc42",
+    "name": "Inc42 Media",
+    "url": "https://inc42.com",
+    "feed_url": "https://inc42.com/feed/",
+    "status": "ready",
+    "inactive": false,
+    "note": "India's largest tech media platform covering Indian startup ecosystem. HQ in New Delhi."
+  },
+  {
+    "source_id": "thenewslens",
+    "name": "The News Lens",
+    "url": "https://international.thenewslens.com",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Independent bilingual digital outlet from Taiwan. HQ in Taipei."
+  },
+  {
+    "source_id": "thebridge",
+    "name": "TheBridge",
+    "url": "https://thebridge.jp",
+    "feed_url": "https://thebridge.jp/feed",
+    "status": "ready",
+    "inactive": false,
+    "note": "Japan-focused media covering startups and tech trends. Official RSS available."
+  },
+  {
+    "source_id": "nikkei_asia",
+    "name": "Nikkei Asia",
+    "url": "https://asia.nikkei.com",
+    "feed_url": "https://asia.nikkei.com/rss/feed/nar",
+    "status": "ready",
+    "inactive": false,
+    "note": "Nikkei's English-language Asian business media. HQ in Tokyo."
+  },
+  {
+    "source_id": "toyokeizai",
+    "name": "Toyo Keizai (東洋経済)",
+    "url": "https://toyokeizai.net",
+    "feed_url": "https://toyokeizai.net/list/feed/rss",
+    "status": "ready",
+    "inactive": false,
+    "note": "Comprehensive Japanese business and economic media. Official RSS available."
+  },
+  {
+    "source_id": "yonhap",
+    "name": "Yonhap News Agency (Tech)",
+    "url": "https://www.yna.co.kr",
+    "feed_url": "https://www.yna.co.kr/rss/news.xml",
+    "status": "ready",
+    "inactive": false,
+    "note": "South Korea's major news agency with technology coverage."
+  },
+  {
+    "source_id": "digitaltoday",
+    "name": "DigitalToday English",
+    "url": "https://digitaltoday.co.kr/en",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Korean tech media with AI-powered English translation. Launched English service March 2026."
+  },
+  {
+    "source_id": "nikkei_robotics",
+    "name": "Nikkei Robotics (日経Robotics)",
+    "url": "https://www.nikkei.com/promotion/service/prime/robotics/",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Print/digital magazine. No RSS."
+  },
+  {
+    "source_id": "nikkei_tech_foresight",
+    "name": "NIKKEI Tech Foresight",
+    "url": "https://www.nikkei.com/promotion/service/prime/tech-foresight/",
+    "feed_url": null,
+    "status": "needs_custom_scraper",
+    "inactive": false,
+    "note": "Premium paid service. No RSS."
+  },
+  {
+    "source_id": "zdnet_korea",
+    "name": "ZDNet Korea",
+    "url": "https://zdnet.co.kr",
+    "feed_url": "https://zdnet.co.kr/rss/allArticle.xml",
+    "status": "ready",
+    "inactive": false,
+    "note": "Korea's leading tech media. Official RSS available."
+  }
+]
