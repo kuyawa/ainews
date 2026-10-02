@@ -28,18 +28,13 @@ struct ParsedItem: Sendable, Hashable {
 
 /// The single abstraction the aggregation engine depends on.
 ///
-/// v1 ships exactly one conformer, FeedFetcher. HTML scraping is the planned
-/// second one, which is why this protocol exists now rather than later: adding
-/// it must not require touching the engine.
+/// Two conformers: FeedFetcher and ScrapeFetcher, chosen per source by
+/// RoutingFetcher. The engine never learns which was used.
 protocol SourceFetching: Sendable {
     func items(for source: SourceSnapshot) async throws -> [ParsedItem]
 }
 
 /// Which strategy a source should use.
-///
-/// The scrape case is deliberately present and routed in v1 even though
-/// nothing implements it. The engine turns it into a visible "not implemented"
-/// warning rather than a silent skip, so the seam stays exercised and tested.
 enum FetchRoute: Sendable, Equatable {
     case feed(URL)
     case scrape(homepage: URL, selector: String)
@@ -49,14 +44,29 @@ enum FetchRoute: Sendable, Equatable {
 enum FetchRouter {
     /// A feed wins when both are available: it is the publisher's own
     /// structured output and far cheaper to read than a homepage.
+    ///
+    /// Anything without a feed is scraped, and a selector is NOT required to
+    /// get there. The scrape strategy is a general heuristic that reads any
+    /// news homepage; headlineSelector is an optional refinement for a source
+    /// it handles badly. Demanding one here meant six sources that scrape
+    /// perfectly well were reported as "no feed and no selector" and never
+    /// read at all - and every component test still passed, because each part
+    /// was tested and only the route between them was wrong.
     static func route(_ source: SourceSnapshot) -> FetchRoute {
         if let feed = source.feedURL {
             return .feed(feed)
         }
-        if let selector = source.headlineSelector,
-           !selector.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return .scrape(homepage: source.url, selector: selector)
+
+        let homepage = source.url
+        let scheme = homepage.scheme?.lowercased()
+        guard scheme == "http" || scheme == "https" else {
+            // The only genuinely unroutable source: one whose homepage is not
+            // something that can be requested at all.
+            return .none(reason: "homepage URL is not http(s)")
         }
-        return .none(reason: "no feed and no selector")
+
+        let selector = source.headlineSelector?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return .scrape(homepage: homepage, selector: selector)
     }
 }

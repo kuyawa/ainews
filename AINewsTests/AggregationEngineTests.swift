@@ -69,12 +69,13 @@ private func source(
     selector: String? = nil,
     inactive: Bool = false,
     cooldown: Int = 60,
-    lastAttemptedAt: Date? = nil
+    lastAttemptedAt: Date? = nil,
+    url: String = "https://example.com"
 ) -> SourceSnapshot {
     SourceSnapshot(
         id: id,
         name: id,
-        url: URL(string: "https://example.com")!,
+        url: URL(string: url)!,
         feedURL: feed.flatMap(URL.init(string:)),
         rank: rank,
         cooldownMinutes: cooldown,
@@ -136,12 +137,18 @@ struct AggregationEngineTests {
         #expect(await persistence.successes.isEmpty)
     }
 
-    @Test("A source with no feed and no selector warns instead of failing silently")
-    func noSourceWarns() async {
+    @Test("A homepage that cannot be requested warns instead of failing silently")
+    func unroutableSourceWarns() async {
         let persistence = RecordingPersistence()
         let fetcher = StubFetcher(outcomes: [:])
-        await engine(fetcher, persistence).run([source("a", feed: nil)]) { _ in }
-        #expect(await persistence.warning(for: "a") == .noSource("no feed and no selector"))
+        // The only unroutable shape left now that a missing selector is no
+        // longer disqualifying. This test used to assert the opposite, that a
+        // feed-less source warns "no feed and no selector" - which is exactly
+        // what the app did wrong, so the suite defended the bug.
+        await engine(fetcher, persistence).run(
+            [source("a", feed: nil, url: "ftp://example.com/feed")]
+        ) { _ in }
+        #expect(await persistence.warning(for: "a") == .noSource("homepage URL is not http(s)"))
     }
 
     @Test("A selector-only source is fetched through the scrape route")
@@ -151,6 +158,19 @@ struct AggregationEngineTests {
         await engine(fetcher, persistence).run([source("a", feed: nil, selector: "h2 a")]) { _ in }
 
         // Used to be skipped as not implemented; now it must actually fetch.
+        #expect(await persistence.didSucceed("a"))
+        #expect(await persistence.warning(for: "a") == nil)
+    }
+
+    @Test("A source with no feed and no selector is fetched, not skipped")
+    func feedlessWithoutSelectorIsFetched() async {
+        let persistence = RecordingPersistence()
+        let fetcher = StubFetcher(outcomes: ["a": .success([sampleItem])])
+        await engine(fetcher, persistence).run([source("a", feed: nil, selector: nil)]) { _ in }
+
+        // The exact shape the app failed on: six feed-less sources came back
+        // as "no feed and no selector" and were never read, because routing
+        // demanded a selector the scrape strategy does not use.
         #expect(await persistence.didSucceed("a"))
         #expect(await persistence.warning(for: "a") == nil)
     }

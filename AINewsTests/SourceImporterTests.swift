@@ -83,6 +83,24 @@ struct SourceImporterTests {
         }
     }
 
+    @Test("Every active source routes to something fetchable")
+    func everyActiveSourceIsRoutable() throws {
+        try withStore { context in
+            try SourceImporter.load(into: context)
+            let sources = try context.fetch(FetchDescriptor<Source>())
+
+            // Every component was tested and green while six sources were
+            // unroutable, so this checks the real list rather than a fixture: a
+            // source the router refuses is one that will silently never be
+            // fetched, and nothing else in the suite would say so.
+            for source in sources where !source.isInactive {
+                if case .none(let reason) = FetchRouter.route(source.snapshot) {
+                    Issue.record("\(source.id) is unroutable: \(reason)")
+                }
+            }
+        }
+    }
+
     @Test("The inactive flags match the editorial decision, exactly")
     func inactiveFlagsAreAsDecided() throws {
         try withStore { context in
