@@ -594,10 +594,10 @@ speculatively.
 ## 10. Build & Run
 
     # Build
-    xcodebuild -project macos/AINews.xcodeproj -scheme AINews -configuration Debug build
+    xcodebuild -project AINews.xcodeproj -scheme AINews -configuration Debug build
 
     # Run
-    open macos/AINews.xcodeproj      # then ⌘R
+    open AINews.xcodeproj      # then ⌘R
 
 Project conventions:
 - **Xcode 26.6**, one app target, one test target.

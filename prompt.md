@@ -18,8 +18,9 @@ One Xcode project containing a SwiftUI app. No server, no browser dependency,
 no separate backend process.
 
 ### 1. Xcode project
-Hand-write `macos/AINews.xcodeproj`. There is no XcodeGen or Tuist on this
-machine, so a valid project file is a deliverable, not a prerequisite.
+Hand-write `AINews.xcodeproj` at the repository root. There is no XcodeGen or
+Tuist on this machine, so a valid project file is a deliverable, not a
+prerequisite.
 
 - App target `AINews`, plus a unit-test target `AINewsTests`.
 - Use **synchronized folder groups** (Xcode 16+): reference the `AINews/`
@@ -188,9 +189,8 @@ Headlines arrive in Chinese, Japanese and Korean. Translate them locally.
 
 ## Deliverables
 
-    macos/
-      AINews.xcodeproj/                 // hand-written, synchronized folder groups
-      AINews/
+    AINews.xcodeproj/                   // hand-written, synchronized folder groups
+    AINews/
         AINewsApp.swift                 // @main, ModelContainer, scenes
         Info.plist                      // ATS exception for leiphone.com
         Models/

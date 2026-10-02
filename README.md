@@ -28,7 +28,7 @@ to fetch. Nothing is fetched automatically.
 
 ### Standalone bundle
 
-To produce a double-clickable `AI News.app` in `macos/build/`:
+To produce a double-clickable `AI News.app` in `build/`:
 
     xcodebuild -project AINews.xcodeproj -scheme AINews -configuration Release \
       CONFIGURATION_BUILD_DIR="$PWD/build" build
