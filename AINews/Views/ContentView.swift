@@ -43,12 +43,19 @@ struct ContentView: View {
                 .help("Re-apply sources.json. Refreshes editorial fields and ADDS or REMOVES sources to match the file — including their headlines. Fetch history for sources that remain is kept.")
                 .disabled(store.isRunning)
 
+                // The label follows the scope, so a button that clears one
+                // source does not claim to clear all of them.
                 Button {
-                    store.markAllRead()
+                    store.markAllRead(sourceID: selectedSourceID)
                 } label: {
-                    Label("Mark All Read", systemImage: "checkmark.circle")
+                    Label(
+                        selectedSourceID == nil ? "Mark All Read" : "Mark Source Read",
+                        systemImage: "checkmark.circle"
+                    )
                 }
-                .help("Mark every headline as read")
+                .help(selectedSourceID == nil
+                      ? "Mark every headline, from every source, as read"
+                      : "Mark every headline from the selected source as read")
             }
         }
     }

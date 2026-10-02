@@ -195,12 +195,31 @@ final class AggregatorStore {
         try? context.save()
     }
 
-    func markAllRead() {
-        let descriptor = FetchDescriptor<Headline>(predicate: #Predicate<Headline> { !$0.isRead })
-        if let unread = try? context.fetch(descriptor) {
-            for headline in unread { headline.isRead = true }
-            try? context.save()
+    /// Marks headlines read, scoped to one source when the sidebar has a
+    /// selection.
+    ///
+    /// Scoped rather than always global because the button sits beside a list
+    /// the reader has narrowed on purpose: clearing the source they are working
+    /// through must not silently clear the other 29. With nothing selected it
+    /// still means everything, which is what it says.
+    func markAllRead(sourceID: String? = nil) {
+        // Two descriptors rather than one predicate comparing an optional:
+        // SwiftData predicates handle the optional badly, and this keeps each
+        // case literal.
+        let descriptor: FetchDescriptor<Headline>
+        if let sourceID {
+            descriptor = FetchDescriptor<Headline>(
+                predicate: #Predicate<Headline> { !$0.isRead && $0.sourceID == sourceID }
+            )
+        } else {
+            descriptor = FetchDescriptor<Headline>(
+                predicate: #Predicate<Headline> { !$0.isRead }
+            )
         }
+
+        guard let unread = try? context.fetch(descriptor) else { return }
+        for headline in unread { headline.isRead = true }
+        try? context.save()
     }
 
     // MARK: - Links
