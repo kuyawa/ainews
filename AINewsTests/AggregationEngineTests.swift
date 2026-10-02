@@ -10,6 +10,8 @@ import Testing
 actor RecordingPersistence: AggregationPersisting {
     private(set) var newBySource: [String: Int] = [:]
     private(set) var successes: [String] = []
+    /// What recordSuccess was told, so the sidebar's "N new" can be asserted.
+    private(set) var reportedNewCounts: [String: Int] = [:]
     private(set) var warnings: [String: AggregationEngine.Warning] = [:]
 
     func upsert(items: [ParsedItem], sourceID: String, at date: Date) async throws -> Int {
@@ -19,8 +21,9 @@ actor RecordingPersistence: AggregationPersisting {
         return isFirst ? items.count : 0
     }
 
-    func recordSuccess(sourceID: String, at date: Date) async {
+    func recordSuccess(sourceID: String, newCount: Int, at date: Date) async {
         successes.append(sourceID)
+        reportedNewCounts[sourceID] = newCount
     }
 
     func recordWarning(sourceID: String, warning: AggregationEngine.Warning, at date: Date) async {
@@ -213,5 +216,15 @@ struct AggregationEngineTests {
         } else {
             Issue.record("expected .unreachable for 404")
         }
+    }
+
+    @Test("A successful fetch reports how many headlines were new")
+    func reportsNewCount() async {
+        let persistence = RecordingPersistence()
+        let fetcher = StubFetcher(outcomes: ["a": .success([sampleItem])])
+        await engine(fetcher, persistence).run([source("a")]) { _ in }
+
+        // The sidebar's 'ok - N new' label reads this, so it has to arrive.
+        #expect(await persistence.reportedNewCounts["a"] == 1)
     }
 }

@@ -95,11 +95,12 @@ final class SwiftDataPersistence: AggregationPersisting {
         return stored > 0 ? stored : 200
     }
 
-    func recordSuccess(sourceID: String, at date: Date) async {
+    func recordSuccess(sourceID: String, newCount: Int, at date: Date) async {
         do {
             guard let row = try source(id: sourceID) else { return }
             row.consecutiveFailures = 0
             row.lastFetchedAt = date
+            row.lastNewCount = newCount
             row.lastAttemptedAt = date
             row.lastWarning = nil
             row.lastWarningAt = nil

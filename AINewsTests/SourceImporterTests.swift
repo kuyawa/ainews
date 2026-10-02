@@ -83,15 +83,40 @@ struct SourceImporterTests {
         }
     }
 
-    @Test("No source is seeded inactive, and no selector is seeded")
-    func defaultsAreClean() throws {
+    @Test("The inactive flags match the editorial decision, exactly")
+    func inactiveFlagsAreAsDecided() throws {
         try withStore { context in
             try SourceImporter.load(into: context)
             let sources = try context.fetch(FetchDescriptor<Source>())
-            #expect(sources.allSatisfy { $0.isInactive == false })
-            #expect(sources.allSatisfy { $0.headlineSelector == nil })
-            #expect(sources.allSatisfy { $0.consecutiveFailures == 0 })
-            #expect(sources.allSatisfy { $0.cooldownMinutes == 60 })
+
+            // Twelve sources produce nothing - five with a dead feed, seven that
+            // cannot be scraped - and are marked inactive so a run does not
+            // spend a request on them. Asserted exactly rather than counted,
+            // because a silent flip either way costs something real: a wasted
+            // request, or a source that quietly stops being fetched.
+            let inactive = Set(sources.filter { $0.isInactive }.map(\.id))
+            let expected: Set<String> = [
+                "jiqizhixin", "aiera", "leitech", "jiazi", "etnews", "bnext",
+                "tnglobal", "inside_tw", "thenewslens", "nikkei_robotics",
+                "nikkei_tech_foresight", "zdnet_korea",
+            ]
+            #expect(inactive == expected)
+            #expect(sources.count == 30)
+        }
+    }
+
+    @Test("Fetched sources start clean, and no selector is seeded")
+    func activeDefaultsAreClean() throws {
+        try withStore { context in
+            try SourceImporter.load(into: context)
+            let sources = try context.fetch(FetchDescriptor<Source>())
+            let active = sources.filter { !$0.isInactive }
+
+            #expect(active.count == 18)
+            #expect(active.allSatisfy { $0.headlineSelector == nil })
+            #expect(active.allSatisfy { $0.consecutiveFailures == 0 })
+            #expect(active.allSatisfy { $0.cooldownMinutes == 60 })
+            #expect(active.allSatisfy { $0.lastNewCount == nil })
         }
     }
 

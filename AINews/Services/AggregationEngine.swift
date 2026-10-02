@@ -9,7 +9,7 @@ import OSLog
 protocol AggregationPersisting: Sendable {
     /// Stores new headlines and returns how many were genuinely new.
     func upsert(items: [ParsedItem], sourceID: String, at date: Date) async throws -> Int
-    func recordSuccess(sourceID: String, at date: Date) async
+    func recordSuccess(sourceID: String, newCount: Int, at date: Date) async
     func recordWarning(sourceID: String, warning: AggregationEngine.Warning, at date: Date) async
 }
 
@@ -170,7 +170,7 @@ actor AggregationEngine {
                 let newCount = try await persistence.upsert(
                     items: items, sourceID: source.id, at: .now
                 )
-                await persistence.recordSuccess(sourceID: source.id, at: .now)
+                await persistence.recordSuccess(sourceID: source.id, newCount: newCount, at: .now)
                 summary.newHeadlines += newCount
                 await emit(
                     .fetched(sourceID: source.id, newCount: newCount, totalInFeed: items.count)

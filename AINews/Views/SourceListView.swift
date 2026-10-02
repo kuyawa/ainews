@@ -53,6 +53,13 @@ private struct SourceRow: View {
 
     private var isScrapeOnly: Bool { source.feedURL == nil }
 
+    /// "ok · 12 new" once a count exists; plain "ok" for a source fetched
+    /// before counts were recorded, never "0 new".
+    static func successText(for source: Source) -> String {
+        guard let count = source.lastNewCount else { return "ok" }
+        return count > 0 ? "ok · \(count) new" : "ok · no new"
+    }
+
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text("\(source.rank)")
@@ -65,6 +72,9 @@ private struct SourceRow: View {
                     .scaledFont(13)
                     .lineLimit(1)
 
+                // Every row shows exactly one second line, so the column
+                // reads evenly. A healthy source used to show nothing, which
+                // made it look like an unfetched one.
                 if source.isInactive {
                     Text(source.deactivationReason ?? "inactive")
                         .scaledFont(10)
@@ -74,6 +84,16 @@ private struct SourceRow: View {
                     Label(warning, systemImage: "exclamationmark.triangle")
                         .scaledFont(10)
                         .foregroundStyle(.orange)
+                        .lineLimit(1)
+                } else if source.lastFetchedAt != nil {
+                    Label(Self.successText(for: source), systemImage: "checkmark.circle")
+                        .scaledFont(10)
+                        .foregroundStyle(.green)
+                        .lineLimit(1)
+                } else {
+                    Text("not fetched yet")
+                        .scaledFont(10)
+                        .foregroundStyle(.tertiary)
                         .lineLimit(1)
                 }
             }

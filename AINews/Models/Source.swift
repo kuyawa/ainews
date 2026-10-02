@@ -29,6 +29,15 @@ final class Source {
 
     var consecutiveFailures: Int
     var lastFetchedAt: Date?
+    /// How many headlines the most recent successful fetch added. Without this
+    /// a healthy source is indistinguishable from one that has never run: both
+    /// have an empty warning field.
+    ///
+    /// Optional on purpose. nil means "no count was recorded" - true for
+    /// anything fetched before this field existed - and must not be shown as
+    /// zero, because a source holding 200 headlines reading "no new" is worse
+    /// than showing no count at all.
+    var lastNewCount: Int?
     var lastAttemptedAt: Date?
     var lastWarning: String?
     var lastWarningAt: Date?
