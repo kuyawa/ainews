@@ -23,6 +23,10 @@ struct ScrapeFetcher: SourceFetching {
 
     let client: HTTPClient
 
+    init(client: HTTPClient = HTTPClient()) {
+        self.client = client
+    }
+
     /// Link text shorter than this is navigation almost every time - "首页",
     /// "More", "登录", "About". Real headlines are longer in every language
     /// this app reads.

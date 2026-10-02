@@ -43,7 +43,6 @@ actor AggregationEngine {
         case serverError(Int)
         case unreachable(String)
         case emptyFeed
-        case notImplemented(String)
 
         var text: String {
             switch self {
@@ -52,7 +51,6 @@ actor AggregationEngine {
             case .serverError(let code): return "server error (HTTP \(code))"
             case .unreachable(let detail): return "unreachable (\(detail))"
             case .emptyFeed: return "empty feed (format change?)"
-            case .notImplemented(let detail): return "not implemented (\(detail))"
             }
         }
 
@@ -60,7 +58,7 @@ actor AggregationEngine {
         /// warnings are not attempts and must not start a cooldown.
         var wasAttempt: Bool {
             switch self {
-            case .noSource, .notImplemented: return false
+            case .noSource: return false
             default: return true
             }
         }
@@ -132,26 +130,16 @@ actor AggregationEngine {
                 continue
             }
 
-            // 2. Which strategy can read this source at all?
+            // 2. Which strategy can read this source at all? Whether it is
+            //    read at all was settled above: an inactive source never
+            //    reaches the network under any route.
             switch FetchRouter.route(source) {
             case .none(let reason):
                 summary.skipped += 1
                 await warn(.noSource(reason), for: source, emit: emit)
                 continue
 
-            case .scrape:
-                // Routed but unimplemented. Reported loudly rather than hidden,
-                // so the feed-less sources are visibly unsupported instead of
-                // looking like failures.
-                summary.skipped += 1
-                await warn(
-                    .notImplemented("HTML scraping is not implemented yet"),
-                    for: source,
-                    emit: emit
-                )
-                continue
-
-            case .feed:
+            case .feed, .scrape:
                 break
             }
 

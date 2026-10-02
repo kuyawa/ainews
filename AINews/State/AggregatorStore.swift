@@ -86,7 +86,7 @@ final class AggregatorStore {
         let range = Int(low * 1000)...Int(high * 1000)
 
         let engine = AggregationEngine(
-            fetcher: FeedFetcher(),
+            fetcher: RoutingFetcher(),
             persistence: SwiftDataPersistence(context: context),
             jitter: range
         )

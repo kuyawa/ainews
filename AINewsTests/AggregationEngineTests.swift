@@ -34,6 +34,20 @@ actor RecordingPersistence: AggregationPersisting {
     func didSucceed(_ id: String) -> Bool { successes.contains(id) }
 }
 
+/// Records which sources it was asked for. An inactive source must never appear
+/// here: the engine has to refuse it before any strategy is chosen.
+actor RecordingFetcher: SourceFetching {
+    private(set) var requested: [String] = []
+    private let payload: [ParsedItem]
+
+    init(payload: [ParsedItem] = []) { self.payload = payload }
+
+    func items(for source: SourceSnapshot) async throws -> [ParsedItem] {
+        requested.append(source.id)
+        return payload
+    }
+}
+
 struct StubFetcher: SourceFetching {
     let outcomes: [String: Result<[ParsedItem], FeedError>]
 
@@ -81,7 +95,7 @@ private let sampleItem = ParsedItem(
 struct AggregationEngineTests {
 
     /// 1ms jitter so tests do not sleep for real.
-    private func engine(_ fetcher: StubFetcher, _ persistence: RecordingPersistence) -> AggregationEngine {
+    private func engine(_ fetcher: any SourceFetching, _ persistence: RecordingPersistence) -> AggregationEngine {
         AggregationEngine(fetcher: fetcher, persistence: persistence, jitter: 1...1)
     }
 
@@ -130,22 +144,39 @@ struct AggregationEngineTests {
         #expect(await persistence.warning(for: "a") == .noSource("no feed and no selector"))
     }
 
-    @Test("A selector-only source reports scraping as not implemented, not as an error")
-    func scrapeRouteReportsNotImplemented() async {
+    @Test("A selector-only source is fetched through the scrape route")
+    func scrapeRouteIsFetched() async {
         let persistence = RecordingPersistence()
-        let fetcher = StubFetcher(outcomes: [:])
+        let fetcher = StubFetcher(outcomes: ["a": .success([sampleItem])])
         await engine(fetcher, persistence).run([source("a", feed: nil, selector: "h2 a")]) { _ in }
 
-        guard case .notImplemented = await persistence.warning(for: "a") else {
-            Issue.record("expected .notImplemented")
-            return
-        }
+        // Used to be skipped as not implemented; now it must actually fetch.
+        #expect(await persistence.didSucceed("a"))
+        #expect(await persistence.warning(for: "a") == nil)
+    }
+
+    @Test("An inactive source is never fetched, whatever route it has")
+    func inactiveIsNeverFetched() async {
+        let persistence = RecordingPersistence()
+        let fetcher = RecordingFetcher(payload: [sampleItem])
+
+        // Both would otherwise be fetched: one has a feed, one routes to
+        // scraping. Inactive has to win before a strategy is even chosen -
+        // this is the flag that keeps us off sources that asked us to stop.
+        let parked = [
+            source("feed_inactive", feed: "https://example.com/feed", inactive: true),
+            source("scrape_inactive", feed: nil, selector: "h2 a", inactive: true),
+        ]
+        await engine(fetcher, persistence).run(parked) { _ in }
+
+        #expect(await fetcher.requested.isEmpty)
+        #expect(await persistence.successes.isEmpty)
+        #expect(await persistence.warnings.isEmpty)
     }
 
     @Test("Routing warnings do not count as fetch attempts, so they start no cooldown")
     func routingWarningsAreNotAttempts() {
         #expect(AggregationEngine.Warning.noSource("x").wasAttempt == false)
-        #expect(AggregationEngine.Warning.notImplemented("x").wasAttempt == false)
         #expect(AggregationEngine.Warning.blocked(403).wasAttempt == true)
         #expect(AggregationEngine.Warning.emptyFeed.wasAttempt == true)
     }
