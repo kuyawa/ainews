@@ -53,9 +53,14 @@ struct ContentView: View {
                         systemImage: "checkmark.circle"
                     )
                 }
+                // ⌘K is what NetNewsWire uses for "Mark All as Read", so it
+                // matches the convention of a Mac feed reader rather than
+                // inventing one. The scope follows the sidebar selection, so a
+                // single shortcut covers both cases.
+                .keyboardShortcut("k", modifiers: .command)
                 .help(selectedSourceID == nil
-                      ? "Mark every headline, from every source, as read"
-                      : "Mark every headline from the selected source as read")
+                      ? "Mark every headline, from every source, as read (⌘K)"
+                      : "Mark every headline from the selected source as read (⌘K)")
             }
         }
     }

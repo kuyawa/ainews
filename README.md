@@ -98,6 +98,24 @@ stays visible.
 
 ---
 
+## Keyboard
+
+| Shortcut | Action |
+|---|---|
+| ⌘K | **Mark read** — the selected source, or every source when nothing is selected |
+| ⌘↩ | Start a run |
+| ⌘⇧R | Reload Sources (re-applies `sources.json`) |
+| ⌘+ | Bigger text |
+| ⌘− | Smaller text |
+| ⌘0 | Actual size |
+
+⌘K is one key with one meaning, and the sidebar decides the scope: there is no
+second shortcut to remember, and no way to clear 30 sources by accident while
+working through one. It is the shortcut NetNewsWire uses for the same action,
+so it is where a Mac reader already expects it.
+
+---
+
 ## Feed status, measured against the live sites
 
 Verified by running the real parser against all 17 feeds:
