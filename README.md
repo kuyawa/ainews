@@ -288,3 +288,7 @@ source from the file deletes it and its headlines.
 - **No scheduler.** The app never wakes itself; every run is started by you.
 - Opening a headline hands the URL to your default browser, so the publisher
   sees a normal visit and your extensions and cookies apply.
+
+---
+
+Made with ♥️ by DeepSeek
